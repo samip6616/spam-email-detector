@@ -14,12 +14,13 @@ df = pd.read_csv("dataset\spam_ham_dataset.csv",encoding='latin-1')
 df.rename(columns={'Unnamed: 0': 'index'}, inplace=True)
 # print(df.columns) #shows the current coloumns of dataset
 
-# Changing the name from ham to not spam and spam to spam
-df['label']= df['label'].replace({
-    'ham' : 'not spam',
-    'spam': 'spam'
-}
-)
+#  Changing the name from ham to not spam and spam to spam
+#THIS WHOLE FUICKING SECTION IS NOT NEEDED CAUSE I AM RETARDED
+# df['label']= df['label'].replace({
+#     'ham' : 'not spam',
+#     'spam': 'spam'
+# }
+# )  
 
 # Input and target
 X = df['text']       # Email text → INPUT
@@ -43,23 +44,40 @@ model = MultinomialNB()
 model.fit(X_train_Vectorized, Y_train)
 
 # Test model
-X_train_vectorized = cv.fit_transform(X_train)
+# X_train_vectorized = cv.fit_transform(X_train) //yo vayo vane kina chaldaina code idk why
+X_train_vectorized = cv.transform(X_train)
 X_test_vectorized= cv.transform(X_test)
 
-print("Training accuracy:", model.score(X_train_vectorized, Y_train))
-print("Testing accuracy:", model.score(X_test_vectorized, Y_test))
+print("\nTraining accuracy:", model.score(X_train_vectorized, Y_train))
+print("\nTesting accuracy:", model.score(X_test_vectorized, Y_test))
 
 # Predict new email (data)
-new_email = [
-    "Hi John, just wanted to confirm that our meeting is scheduled for tomorrow at 10 AM."
+new_email = [  #Yesma jeni hale hunxa test garna spam or not spam
+    "Hello! My name is Rajat.",
+    "Hi, how are you?",
+    "Can we meet tomorrow?",
+    "Congratulations! You have won a $1000 prize!",
+    "Claim your free reward now!",
+    "You have won a lottery. Click here to claim your prize."
 ]
 new_email_vectorized = cv.transform(new_email)
 
 prediction = model.predict(new_email_vectorized)
-print(prediction)
+
+# print(prediction) //Yesle result 1 or 0 ko form ma dinxa
 
 #output customization
-if prediction[0] == 1:
-    print("spam")
-else:
-    print("not spam")
+
+# This part doenst fucking work if u have an array/list of elements
+# if prediction[0] == 1:
+#     print("spam")
+# else:
+#     print("not spam")
+
+for email, prediction in zip(new_email, prediction):
+    if prediction == 1:
+        result = "\nspam"
+    else:
+        result = "\nnot spam"
+
+    print(f"{result}: {email}")
